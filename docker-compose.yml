@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  app:
+    tty: true
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: ./docker/app/dev/Dockerfile
+    volumes:
+      - ./:/myapp
+    command: bundle exec puma -C config/puma.rb
+  nginx:
+    build:
+      context: ./docker/nginx/dev
+    volumes:
+      - ./public:/myapp/public
+      - ./tmp:/myapp/tmp
+    ports:
+      - 80:80
+    depends_on:
+      - app
